@@ -1,2 +1,2 @@
-# MiniOO
+# MiniOOL
 NYU Honor Programming Languages Project
