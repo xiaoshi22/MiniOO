@@ -30,7 +30,7 @@ let setvalue x v =
 
 %token EOL SEMICOLON ASSIGN PLUS /* lexer tokens */
 %token MINUS TIMES DIV LPAREN RPAREN
-%token < string > IDENT
+%token < string > VAR
 %token < int > NUM
 %start prog                   /* the entry point */
 %type <unit> prog  
@@ -56,7 +56,7 @@ cmd :
   | expr    { $1 }
   
 assign :
-    IDENT ASSIGN expr  { (setvalue $1 $3) ; $3 }
+    VAR ASSIGN expr  { (setvalue $1 $3) ; $3 }
 	
 expr :
     expr PLUS expr           { $1 + $3 }
@@ -65,7 +65,7 @@ expr :
   | expr DIV expr            { $1 / $3 }
   | MINUS expr %prec UMINUS  { - $2 }
   | LPAREN expr RPAREN       { $2 }
-  | IDENT                    { (getvalue $1) }
+  | VAR                    { (getvalue $1) }
   | NUM                      { $1 }
   
 %% (* trailer *)
