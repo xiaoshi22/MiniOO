@@ -1,71 +1,55 @@
 /* File MinioolYACC.mly */
 
-%{ (* header *)
-  
-type symbTable = (string * int) list ;;
-
-let sb = ref([] : symbTable) ;;
-
-let getvalue x =
-   if (List.mem_assoc x !sb) then 
-     (List.assoc x !sb)
-   else
-     0;;
-
-let rec except x l = match l with
-  []   -> []
-| h::t -> if (h = x) then t
-            else h::(except x t)
-
-let setvalue x v =
-  (print_string (x ^ " = "); print_int (v);
-   print_string ";\n"; flush stdout;
-   if (List.mem_assoc x !sb) then
-     sb := (x, v) :: (except (x, (List.assoc x !sb)) !sb)
-   else
-     sb := (x, v) :: !sb 
-  );;
-
+%{ (* header *) 
+  open MinioolAST
 %} /* declarations */
 
-%token EOL SEMICOLON ASSIGN PLUS /* lexer tokens */
-%token MINUS TIMES DIV LPAREN RPAREN
-%token < string > VAR
-%token < int > NUM
+%token END SEMICOLON ASSIGN VAR /* lexer tokens */
+%token MINUS LBRACE RBRACE NULL PROCY DOT
+%token TRUE FALSE EQUALTO LESSTHAN 
+%token SKIP WHILE IF ELSE MALLOC ATOM PARALLEL LPAREN RPAREN
+%token <string> VARIABLE
+%token <string> FIELD
+%token <int> NUM
+
+%left MINUS 
+%left EQUALTO LESSTHAN
+
 %start prog                   /* the entry point */
-%type <unit> prog  
-%type <int> cmds
-%type <int> cmd
-%type <int> assign
-%type <int> expr
-%left PLUS MINUS            /* lowest precedence */
-%left TIMES DIV             /* medium precedence */
-%nonassoc UMINUS           /* highest precedence */
+%type <unit MinioolAST.tree> prog  
+%type <unit MinioolAST.tree> cmd
+%type <unit expr> expr
+%type <unit bexpr> bexpr
 
 %% /* rules */
-
 prog :
-    cmds EOL  { print_int $1 ; print_newline(); flush stdout; () }
-	
-cmds :
-    cmd SEMICOLON cmds  { $3 }
-  | cmd                 { $1 }
-  
+    cmd END  { $1 }
+
 cmd :
-    assign  { $1 }
-  | expr    { $1 }
-  
-assign :
-    VAR ASSIGN expr  { (setvalue $1 $3) ; $3 }
-	
+    VAR VARIABLE SEMICOLON cmd      { Var_decl($2, $4, ()) }
+  | expr LPAREN expr RPAREN         { Proc_call($1, $3, ()) }
+  | MALLOC LPAREN VARIABLE RPAREN   { Alloc($3, ()) }
+  | VARIABLE ASSIGN expr            { Var_assign($1, $3, ()) }
+  | expr DOT expr ASSIGN expr       { Field_assign($1, $3, $5, ()) } 
+  | SKIP                            { Skip(()) }
+  | LBRACE cmd SEMICOLON cmd RBRACE { Seq($2, $4, ()) }
+  | WHILE bexpr cmd                 { While($2, $3, ()) }
+  | IF bexpr cmd ELSE cmd           { If_else($2, $3, $5, ())}
+  | LBRACE cmd PARALLEL cmd RBRACE  { Parallel($2, $4, ()) }
+  | ATOM LPAREN cmd RPAREN          { Atom($3, ()) }
+
 expr :
-    expr PLUS expr           { $1 + $3 }
-  | expr MINUS expr          { $1 - $3 }
-  | expr TIMES expr          { $1 * $3 }
-  | expr DIV expr            { $1 / $3 }
-  | MINUS expr %prec UMINUS  { - $2 }
-  | LPAREN expr RPAREN       { $2 }
-  | VAR                    { (getvalue $1) }
-  | NUM                      { $1 }
-  
+    FIELD                           { Field($1, ()) }
+  | NUM                             { Num($1, ()) }
+  | VARIABLE                        { Var($1, ()) }
+  | expr MINUS expr                 { Minus($1, $3, ()) }
+  | NULL                            { Null(()) }
+  | expr DOT expr                   { Field_select($1, $3, ()) }
+  | PROCY cmd                       { Proc_y($2, ()) } 
+
+bexpr: 
+  | TRUE                            { True(()) }
+  | FALSE                           { False(()) }
+  | expr EQUALTO expr               { Equal_to($1, $3, ()) }
+  | expr LESSTHAN expr              { Less_than($1, $3, ()) }
 %% (* trailer *)
