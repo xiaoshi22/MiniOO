@@ -41,4 +41,4 @@ all: delete
 	@echo "atom(skip)" | ./miniool
 
 delete:
-	/bin/rm -f miniool miniool.cmi miniool.cmo minioolLEX.cmi minioolLEX.cmo minioolLEX.ml minioolYACC.cmi minioolYACC.cmo minioolYACC.ml minioolYACC.mli makefile~
+	/bin/rm -f miniool miniool.cmi miniool.cmo minioolLEX.cmi minioolLEX.cmo minioolLEX.ml minioolYACC.cmi minioolYACC.cmo minioolYACC.ml minioolYACC.mli minioolAST.cmi minioolAST.mli minioolAST.cmo makefile~
