@@ -1,44 +1,42 @@
+BDIR = build
+
 all: delete
-	ls
-	ocamlc -i minioolAST.ml > minioolAST.mli
-	ocamlc -c minioolAST.mli
 	ocamlc -c minioolAST.ml
-	@echo "# Lexer specification:"
-	# cat minioolLEX.mll
-	ocamllex minioolLEX.mll
-	ls
-	@echo "# Parser specification:"
-	# cat minioolYACC.mly
-	@echo "# Parser creation:"
+
 	ocamlyacc minioolYACC.mly
-	ls
-	@echo "# types of values returned by lexems:"
-	# cat minioolYACC.mli
-	@echo "# Compilation of the lexer and parser:"
 	ocamlc -c minioolYACC.mli
-	ocamlc -c minioolLEX.ml
 	ocamlc -c minioolYACC.ml
-	@echo "# Specification of the miniool:"
-	# cat miniool.ml 
-	@echo "# compilation of the miniool:"
-	ocamlc -i minioolAST.ml > minioolAST.mli
-	ocamlc -c minioolAST.mli
+
+	ocamllex minioolLEX.mll
+	ocamlc -c minioolLEX.ml
+
 	ocamlc -c miniool.ml
-	@echo "# linking of the lexer, parser & miniool:"
-	ocamlc -o miniool minioolAST.cmo minioolLEX.cmo minioolYACC.cmo miniool.cmo
-	ls
+	ocamlc -o miniool minioolAST.cmo minioolYACC.cmo minioolLEX.cmo miniool.cmo
+
+test:
 	@echo "---------------------------------------------------"
 	@echo "# using the miniool:"
-	@echo "var x; x =2-1" 
-	@echo "{var x; x =2-1;var y; y = x - 1}" | ./miniool
-	@echo "{{{var x; x = null}; x=z.y};proc y:C}" 
-	@echo "{{{var x; x = null}; x=z.y};proc y:C}" | ./miniool
-	@echo "{x(x); malloc(x)}" 
-	@echo "{x(x); malloc(x)}" | ./miniool
-	@echo "{x.y=z; {skip|||skip}}"
-	@echo "{x.y=z; {skip|||skip}}" | ./miniool
-	@echo "atom(skip)" 
-	@echo "atom(skip)" | ./miniool
+	@echo "{var x; skip;var y; skip}"
+	@echo "{var x; skip;var y; skip}" | ./miniool
+	@echo "{while true skip ||| if false skip else skip}"
+	@echo "{while true skip ||| if false skip else skip}" | ./miniool
+	@echo "{atom(while 1 == 2 skip);atom(if 3 < 2 skip else skip)}"
+	@echo "{atom(while 1 == 2 skip);atom(if 3 < 2 skip else skip)}" | ./miniool
 
+testSkip:
+	@echo "{skip;skip}"
+	@echo "{skip;skip}" | ./miniool
+
+test2:
+	echo "x = proc y: x = 1" | ./miniool
+	# @echo "{{{var x; x = null}; x=z.y};proc y:C}" 
+	# @echo "{{{var x; x = null}; x=z.y};proc y:C}" | ./miniool
+	# @echo "{x(x); malloc(x)}" 
+	# @echo "{x(x); malloc(x)}" | ./miniool
+	# @echo "{x.y=z; {skip|||skip}}"
+	# @echo "{x.y=z; {skip|||skip}}" | ./miniool
+	# @echo "atom(skip)" 
+	# @echo "atom(skip)" | ./miniool
+	
 delete:
-	/bin/rm -f miniool miniool.cmi miniool.cmo minioolLEX.cmi minioolLEX.cmo minioolLEX.ml minioolYACC.cmi minioolYACC.cmo minioolYACC.ml minioolYACC.mli minioolAST.cmi minioolAST.mli minioolAST.cmo makefile~
+	/bin/rm -f miniool miniool.cmi miniool.cmo  minioolAST.cmi minioolAST.cmo minioolLEX.cmi minioolLEX.cmo minioolLEX.ml minioolYACC.cmi minioolYACC.cmo minioolYACC.ml minioolYACC.mli makefile~

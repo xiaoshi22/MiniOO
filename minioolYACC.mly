@@ -5,7 +5,7 @@
 %} /* declarations */
 
 %token END SEMICOLON ASSIGN VAR /* lexer tokens */
-%token MINUS LBRACE RBRACE NULL PROCY DOT
+%token MINUS LBRACE RBRACE NULL PROC COLON DOT
 %token TRUE FALSE EQUALTO LESSTHAN 
 %token SKIP WHILE IF ELSE MALLOC ATOM PARALLEL LPAREN RPAREN
 %token <string> VARIABLE
@@ -26,11 +26,11 @@ prog :
     cmd END  { $1 }
 
 cmd :
-    VAR VARIABLE SEMICOLON cmd      { Var_decl($2, $4, ()) }
+    VAR VARIABLE SEMICOLON cmd      { Var_declaration($2, $4, ()) }
   | expr LPAREN expr RPAREN         { Proc_call($1, $3, ()) }
-  | MALLOC LPAREN VARIABLE RPAREN   { Alloc($3, ()) }
-  | VARIABLE ASSIGN expr            { Var_assign($1, $3, ()) }
-  | expr DOT expr ASSIGN expr       { Field_assign($1, $3, $5, ()) } 
+  | MALLOC LPAREN VARIABLE RPAREN   { Allocation($3, ()) }
+  | VARIABLE ASSIGN expr            { Var_assignment($1, $3, ()) }
+  | expr DOT expr ASSIGN expr       { Field_assignment($1, $3, $5, ()) } 
   | SKIP                            { Skip(()) }
   | LBRACE cmd SEMICOLON cmd RBRACE { Seq($2, $4, ()) }
   | WHILE bexpr cmd                 { While($2, $3, ()) }
@@ -44,8 +44,8 @@ expr :
   | VARIABLE                        { Var($1, ()) }
   | expr MINUS expr                 { Minus($1, $3, ()) }
   | NULL                            { Null(()) }
-  | expr DOT expr                   { Field_select($1, $3, ()) }
-  | PROCY cmd                       { Proc_y($2, ()) } 
+  | expr DOT expr                   { Field_selection($1, $3, ()) }
+  | PROC VARIABLE COLON cmd         { Procedure($2, $4, ()) } 
 
 bexpr: 
   | TRUE                            { True(()) }

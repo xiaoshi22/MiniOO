@@ -14,7 +14,7 @@ rule token = parse
   | "else"          { ELSE } 
   | "skip"          { SKIP }
   | "null"          { NULL }
-  | "proc y:"       { PROCY }
+  | "proc"          { PROC }
   | "malloc"        { MALLOC }
   | "atom"          { ATOM }
   | (['a'-'z'] | ['A'-'Z'])(['a'-'z'] | ['A'-'Z'] | ['0'-'9'])* as variable
@@ -24,6 +24,7 @@ rule token = parse
   | ['0'-'9']+ as num
                     { NUM (int_of_string num) }
   | ';'             { SEMICOLON }
+  | ':'             { COLON }
   | '='             { ASSIGN }
   | '-'             { MINUS }
   | '{'             { LBRACE }
