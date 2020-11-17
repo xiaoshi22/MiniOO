@@ -16,12 +16,12 @@ all: delete
 test:
 	@echo "---------------------------------------------------"
 	@echo "# using the miniool:"
-	@echo "{var x; skip;var y; skip}"
-	@echo "{var x; skip;var y; skip}" | ./miniool
+	@echo "{var X; X = proc K:skip;var Y; skip}"
+	@echo "{var X; X = proc K:skip;var Y; skip}" | ./miniool
 	@echo "{while true skip ||| if false skip else skip}"
 	@echo "{while true skip ||| if false skip else skip}" | ./miniool
-	@echo "{atom(while 1 == 2 skip);atom(if 3 < 2 skip else skip)}"
-	@echo "{atom(while 1 == 2 skip);atom(if 3 < 2 skip else skip)}" | ./miniool
+	@echo "{atom(while X.f == null X = Y);atom(if 3 - 1 < 2 skip else X.f = K)}"
+	@echo "{atom(while X.f == null X = Y);atom(if 3 - 1 < 2 skip else X.f = K)}" | ./miniool
 
 testSkip:
 	@echo "{skip;skip}"

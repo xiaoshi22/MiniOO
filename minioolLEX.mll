@@ -17,9 +17,9 @@ rule token = parse
   | "proc"          { PROC }
   | "malloc"        { MALLOC }
   | "atom"          { ATOM }
-  | (['a'-'z'] | ['A'-'Z'])(['a'-'z'] | ['A'-'Z'] | ['0'-'9'])* as variable
+  | (['A'-'Z'])(['a'-'z'] | ['A'-'Z'] | ['0'-'9'])* as variable
                     { VARIABLE variable }
-  | (['A'-'Z'] | ['A'-'Z'])(['a'-'z'] | ['A'-'Z'] | ['0'-'9'])* as field
+  | (['a'-'z'])(['a'-'z'] | ['A'-'Z'] | ['0'-'9'])* as field
                     { FIELD field }
   | ['0'-'9']+ as num
                     { NUM (int_of_string num) }
