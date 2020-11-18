@@ -2,6 +2,8 @@ BDIR = build
 
 all: delete
 	ocamlc -c minioolAST.ml
+	ocamlc -c minioolStaticScoping.ml
+	ocamlc -c minioolPrintAST.ml
 
 	ocamlyacc minioolYACC.mly
 	ocamlc -c minioolYACC.mli
@@ -11,7 +13,7 @@ all: delete
 	ocamlc -c minioolLEX.ml
 
 	ocamlc -c miniool.ml
-	ocamlc -o miniool minioolAST.cmo minioolYACC.cmo minioolLEX.cmo miniool.cmo
+	ocamlc -o miniool minioolAST.cmo minioolStaticScoping.cmo minioolPrintAST.cmo  minioolYACC.cmo minioolLEX.cmo miniool.cmo
 
 test:
 	@echo "---------------------------------------------------"
@@ -27,6 +29,12 @@ testSkip:
 	@echo "{skip;skip}"
 	@echo "{skip;skip}" | ./miniool
 
+testStaticScoping:
+	@echo "var X; skip"	
+	@echo "var X; skip" | ./miniool
+	@echo "var X; Y=1"
+	@echo "var X; Y=1" | ./miniool
+
 test2:
 	echo "x = proc y: x = 1" | ./miniool
 	# @echo "{{{var x; x = null}; x=z.y};proc y:C}" 
@@ -39,7 +47,13 @@ test2:
 	# @echo "atom(skip)" | ./miniool
 
 delete:
-	/bin/rm -f miniool miniool.cmi miniool.cmo  minioolAST.cmi minioolAST.cmo minioolLEX.cmi minioolLEX.cmo minioolLEX.ml minioolYACC.cmi minioolYACC.cmo minioolYACC.ml minioolYACC.mli makefile~
+	/bin/rm -f miniool miniool.cmi miniool.cmo \
+				 minioolAST.cmi minioolAST.cmo \
+				 minioolStaticScoping.cmi minioolStaticScoping.cmo \
+				 minioolPrintAST.cmi minioolPrintAST.cmo \
+				 minioolLEX.cmi minioolLEX.cmo minioolLEX.ml \
+				 minioolYACC.cmi minioolYACC.cmo minioolYACC.ml minioolYACC.mli \
+				 makefile~
 
 example:
 	# Field and loop
