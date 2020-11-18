@@ -37,6 +37,34 @@ test2:
 	# @echo "{x.y=z; {skip|||skip}}" | ./miniool
 	# @echo "atom(skip)" 
 	# @echo "atom(skip)" | ./miniool
-	
+
 delete:
 	/bin/rm -f miniool miniool.cmi miniool.cmo  minioolAST.cmi minioolAST.cmo minioolLEX.cmi minioolLEX.cmo minioolLEX.ml minioolYACC.cmi minioolYACC.cmo minioolYACC.ml minioolYACC.mli makefile~
+
+example:
+	# Field and loop
+	@echo "var X; {malloc(X);{X.f=1;while X.f<30 X.f=X.f+X.f}}" | ./miniool
+	# If else
+	@echo "var X; {X=1; if X>2 X=3 else X=88}" | ./miniool
+	# Procedure Call
+	@echo "var X; var Y;{X = proc X: Y=X; X(1)}" | ./miniool
+	# Call itself
+	@echo "var X; var Y;{X = proc X: Y=X; X(X)}" | ./miniool
+
+	# If else
+	@echo "var P; {P = proc Y: if Y<1 P=1 else P(Y-1); P(1)}" | ./miniool
+
+	# atom to avoid block
+	@echo "{atom(var X; X=1); var Y; Y=1}" | ./miniool
+	@echo "var X; var Y;{X = proc X: Y=X; {atom(X(X));Y(2)}}" | ./miniool
+
+	# Parity
+	@echo "var Parity; {Parity = proc X: if X/2*2==X X=0 else X=1; Parity(100)}" | ./miniool
+
+	# Parallel
+	@echo "var X; {X=4|||X=2}" | ./miniool
+	@echo "var X; {X=4;while X==4 {skip||| X=3}}" | ./miniool
+
+	# Fibonacci
+	@echo "var A; var B; var C; var X;{X=20;{B=1;{A=0;var I; {I=0;while I<X {I=I+1;{C=B;{B = A+B; A = C}}}}}}}" | ./miniool
+

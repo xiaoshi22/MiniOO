@@ -5,14 +5,15 @@
 %} /* declarations */
 
 %token END SEMICOLON ASSIGN VAR /* lexer tokens */
-%token MINUS LBRACE RBRACE NULL PROC COLON DOT
+%token ADD MINUS TIMES DIV LBRACE RBRACE NULL PROC COLON DOT
 %token TRUE FALSE EQUALTO LESSTHAN 
 %token SKIP WHILE IF ELSE MALLOC ATOM PARALLEL LPAREN RPAREN
 %token <string> VARIABLE
 %token <string> FIELD
 %token <int> NUM
 
-%left MINUS 
+%left ADD MINUS 
+%left TIMES DIV
 %left EQUALTO LESSTHAN
 
 %start prog                   /* the entry point */
@@ -42,7 +43,10 @@ expr :
     FIELD                           { Field($1, ()) }
   | NUM                             { Num($1, ()) }
   | VARIABLE                        { Var($1, ()) }
-  | expr MINUS expr                 { Minus($1, $3, ()) }
+  | expr ADD expr                   { Addition($1, $3, ()) }
+  | expr MINUS expr                 { Subtraction($1, $3, ()) }
+  | expr TIMES expr                 { Multiplication($1, $3, ()) }
+  | expr DIV expr                   { Division($1, $3, ()) }
   | NULL                            { Null(()) }
   | expr DOT expr                   { Field_selection($1, $3, ()) }
   | PROC VARIABLE COLON cmd         { Procedure($2, $4, ()) } 

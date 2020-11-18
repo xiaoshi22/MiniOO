@@ -26,7 +26,10 @@ rule token = parse
   | ';'             { SEMICOLON }
   | ':'             { COLON }
   | '='             { ASSIGN }
+  | '+'             { ADD }
   | '-'             { MINUS }
+  | '*'             { TIMES }
+  | '/'             { DIV }
   | '{'             { LBRACE }
   | '}'             { RBRACE }
   | '('             { LPAREN }
