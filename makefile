@@ -4,6 +4,7 @@ all: delete
 	ocamlc -c minioolAST.ml
 	ocamlc -c minioolStaticScoping.ml
 	ocamlc -c minioolPrintAST.ml
+	ocamlc -c minioolSemanticDomain.ml
 
 	ocamlyacc minioolYACC.mly
 	ocamlc -c minioolYACC.mli
@@ -13,7 +14,8 @@ all: delete
 	ocamlc -c minioolLEX.ml
 
 	ocamlc -c miniool.ml
-	ocamlc -o miniool minioolAST.cmo minioolStaticScoping.cmo minioolPrintAST.cmo  minioolYACC.cmo minioolLEX.cmo miniool.cmo
+	ocamlc -o miniool minioolAST.cmo minioolStaticScoping.cmo minioolPrintAST.cmo minioolSemanticDomain.cmo \
+			 minioolYACC.cmo minioolLEX.cmo miniool.cmo
 
 test:
 	@echo "---------------------------------------------------"
@@ -36,7 +38,14 @@ testStaticScoping:
 	@echo "var X; Y=1" | ./miniool
 
 test2:
-	echo "x = proc y: x = 1" | ./miniool
+	@echo "var X; X = 1"
+	@echo "var X; X = 1" | ./miniool
+	@echo "var X; if 1 + 1 == 2 X = 1 else X = 2"
+	@echo "var X; if 1 + 1 == 2 X = 1 else X = 2" | ./miniool
+	@echo "var X; while false X = 1"
+	@echo "var X; while false X = 1" | ./miniool
+
+test3:
 	# @echo "{{{var x; x = null}; x=z.y};proc y:C}" 
 	# @echo "{{{var x; x = null}; x=z.y};proc y:C}" | ./miniool
 	# @echo "{x(x); malloc(x)}" 
@@ -51,6 +60,7 @@ delete:
 				 minioolAST.cmi minioolAST.cmo \
 				 minioolStaticScoping.cmi minioolStaticScoping.cmo \
 				 minioolPrintAST.cmi minioolPrintAST.cmo \
+				 minioolSemanticDomain.cmi minioolSemanticDomain.cmo \
 				 minioolLEX.cmi minioolLEX.cmo minioolLEX.ml \
 				 minioolYACC.cmi minioolYACC.cmo minioolYACC.ml minioolYACC.mli \
 				 makefile~

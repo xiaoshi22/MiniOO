@@ -18,49 +18,49 @@ and print_expr e vars ind is_last =
     else (ind^"    ") in
   match e with
   (* f -- Field *)
-  | Field(f, ()) -> 
+  | Field(f) -> 
     print_endline("Field "^(info_text f))
   (* 1 -- Num *)
-  | Num(n, ()) -> 
+  | Num(n) -> 
     print_endline("Num "^(info_text (string_of_int n)))
   (* x -- Var *)
-  | Var(v, ()) -> 
+  | Var(v) -> 
     print_var v vars
   (* e + e -- Addition *)
-  | Addition(e1, e2, ()) -> 
+  | Addition(e1, e2) -> 
     print_endline("Addition");
     print_expr e1 vars next_ind false;
     print_token "+" next_ind false;
     print_expr e2 vars next_ind true
   (* e - e -- Subtraction *)
-  | Subtraction(e1, e2, ()) -> 
+  | Subtraction(e1, e2) -> 
     print_endline("Subtraction");
     print_expr e1 vars next_ind false;
     print_token "-" next_ind false;
     print_expr e2 vars next_ind true
   (* e * e -- Multiplication *)
-  | Multiplication(e1, e2, ()) -> 
+  | Multiplication(e1, e2) -> 
     print_endline("Multiplication");
     print_expr e1 vars next_ind false;
     print_token "*" next_ind false;
     print_expr e2 vars next_ind true
   (* e / e -- Division *)
-  | Division(e1, e2, ()) -> 
+  | Division(e1, e2) -> 
     print_endline("Division");
     print_expr e1 vars next_ind false;
     print_token "/" next_ind false;
     print_expr e2 vars next_ind true
   (* null -- Null *)
-  | Null(()) -> 
+  | Null -> 
   print_endline("Null "^(info_text "null"))
   (* e.e -- Field Selection *)
-  | Field_selection(e1, e2, ()) -> 
+  | Field_selection(e1, e2) -> 
     print_endline("Field Selection");
     print_expr e1 vars next_ind false;
     print_token "." next_ind false;
     print_expr e2 vars next_ind true
   (* proc y:C -- Procedure *)
-  | Procedure(v, t, ()) -> 
+  | Procedure(v, t) -> 
     Hashtbl.add !vars v false;
     print_endline("Procedure");
     print_token "proc" next_ind false;
@@ -77,19 +77,19 @@ and print_bexpr b vars ind is_last =
     else (ind^"    ") in
   match b with
   (* true -- True*)
-  | True(()) -> 
+  | True -> 
     print_endline("True "^(info_text "true"))
   (* false -- False*)
-  | False(()) -> 
+  | False -> 
     print_endline("False "^(info_text "false"))
   (* e == e -- Equal To *)
-  | Equal_to(e1, e2, ()) -> 
+  | Equal_to(e1, e2) -> 
     print_endline("Equal To");
     print_expr e1 vars next_ind false;
     print_token "==" next_ind false;
     print_expr e2 vars next_ind true
   (* e < e -- Less Than *)
-  | Less_than(e1, e2, ()) -> 
+  | Less_than(e1, e2) -> 
     print_endline("Less Than");
     print_expr e1 vars next_ind false;
     print_token "<" next_ind false;
@@ -103,7 +103,7 @@ and print_command t vars ind is_last =
     else (ind^"    ") in
   match t with
   (* var x;C -- Variable Delcaration *)
-  | Var_declaration(v, t, ()) -> 
+  | Var_declaration(v, t) -> 
     Hashtbl.add !vars v false;
     print_endline("Variable Delcaration");
     print_token "var" next_ind false;
@@ -112,25 +112,25 @@ and print_command t vars ind is_last =
     print_command t vars next_ind true;
     Hashtbl.remove !vars v
   (* e(e) -- Procedure Call *)
-  | Proc_call(e1, e2, ()) -> 
+  | Proc_call(e1, e2) -> 
     print_endline("Procedure Call");
     print_expr e1 vars next_ind false;
     print_token "(" next_ind false;
     print_expr e2 vars next_ind false;
     print_token ")" next_ind true
   (* malloc(x) -- Allocation *)
-  | Allocation(v, ()) ->
+  | Allocation(v) ->
     print_endline("Allocation");
     print_token "malloc" next_ind false;
     print_string(next_ind^"├── "); print_var v vars;
   (* x = e -- Varaible Assignment *)
-  | Var_assignment(v, e, ()) -> 
+  | Var_assignment(v, e) -> 
     print_endline("Varaible Assignment");
     print_string(next_ind^"├── "); print_var v vars;
     print_token "=" next_ind false;
     print_expr e vars next_ind true
   (* e.e = e -- Field Assignment *)
-  | Field_assignment(e1, e2, e3, ()) ->
+  | Field_assignment(e1, e2, e3) ->
   print_endline("Field Assignment");
     print_expr e1 vars next_ind false;
     print_token "." next_ind false;
@@ -138,10 +138,10 @@ and print_command t vars ind is_last =
     print_token "=" next_ind false;
     print_expr e3 vars next_ind true
   (* skip -- Skip *)
-  | Skip(()) -> 
+  | Skip -> 
     print_endline("Skip "^(info_text "skip"))
   (* {C:C} -- Sequential Control *)
-  | Seq(t1, t2, ()) -> 
+  | Seq(t1, t2) -> 
     print_endline("Sequential Control");
     print_token "{" next_ind false;
     print_command t1 vars next_ind false;
@@ -149,13 +149,13 @@ and print_command t vars ind is_last =
     print_command t2 vars next_ind false;
     print_token "}" next_ind true;
   (* while b C -- While Loop *)
-  | While(b, t, ()) -> 
+  | While(b, t) -> 
     print_endline("While Loop");
     print_token "while" next_ind false;
     print_bexpr b vars next_ind false;
     print_command t vars next_ind true
   (* if b C else C -- If Statement *)
-  | If_else(b, t1, t2, ()) -> 
+  | If_else(b, t1, t2) -> 
     print_endline("If Statement");
     print_token "if" next_ind false;
     print_bexpr b vars next_ind false;
@@ -163,7 +163,7 @@ and print_command t vars ind is_last =
     print_token "else" next_ind false;
     print_command t2 vars next_ind true
   (* {C|||C} -- Parallelism *)
-  | Parallel(t1, t2, ()) -> 
+  | Parallel(t1, t2) -> 
     print_endline("Parallelism");
     print_token "{" next_ind false;
     print_command t1 vars next_ind false;
@@ -171,7 +171,7 @@ and print_command t vars ind is_last =
     print_command t2 vars next_ind false;
     print_token "}" next_ind true;
   (* atom(C) -- Atomicity *)
-  | Atom(t, ()) -> 
+  | Atom(t) -> 
     print_endline("Atomicity");
     print_token "atom" next_ind false;
     print_token "(" next_ind false;

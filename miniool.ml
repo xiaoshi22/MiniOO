@@ -3,8 +3,9 @@ open Parsing;;
 open MinioolAST;;
 open MinioolPrintAST;;
 open MinioolStaticScoping;;
+open MinioolSemanticDomain;;
 
-type color = Info | Error | Warning | Success;;
+(* type color = Info | Error | Warning | Success;; *)
 (* let print_colored text color = 
   match color with
     | Info -> print_endline("\x1B[1;96m"^text^"\x1B[0m")
@@ -20,11 +21,15 @@ let lexbuf = Lexing.from_channel stdin in
       MinioolStaticScoping.check_prog ast;
       Printf.fprintf stdout "\x1B[1;96mPrinting AST...\x1B[0m\n%!";
       MinioolPrintAST.print_prog ast;
+      Printf.fprintf stdout "\x1B[1;96mExecuting program...\x1B[0m\n%!";
+      MinioolSemanticDomain.execute_prog ast;
   with 
     | MinioolLEX.Error ->
-      Printf.fprintf stderr "\x1B[0;91mError: At offset %d: unexpected character.\x1B[0m\n%!"(Lexing.lexeme_start lexbuf)
+      Printf.fprintf stderr "\x1B[1;91mError\x1B[0m: At offset %d: unexpected character.\n%!"(Lexing.lexeme_start lexbuf)
     | Parse_error ->
-      Printf.fprintf stderr "\x1B[0;91mError: At offset %d: syntax error.\x1B[0m\n%!"(Lexing.lexeme_start lexbuf)
+      Printf.fprintf stderr "\x1B[1;91mError\x1B[0m: At offset %d: syntax error.\n%!"(Lexing.lexeme_start lexbuf)
     | MinioolStaticScoping.Error v ->
-      Printf.fprintf stderr "\x1B[0;91mError: Variable %s is not declared.\x1B[0m\n%!" v
+      Printf.fprintf stderr "\x1B[1;91mError\x1B[0m: Variable %s is not declared.\n%!" v
+    | MinioolSemanticDomain.Error ->
+      Printf.fprintf stderr "\x1B[1;91mError\x1B[0m: Error in semantics.\n%!"
       ;;

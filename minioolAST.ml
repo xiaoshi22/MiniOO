@@ -1,58 +1,59 @@
 type variable = string
+type field = string
 (* Expressions e ::= *)
-and 'a expr = 
+and expr = 
   (* f -- Field *)
-  | Field of string * 'a
+  | Field of field
   (* 1 -- Num *)
-  | Num of int * 'a
+  | Num of int
   (* x -- Var *)
-  | Var of string * 'a
+  | Var of variable
   (* e + e -- Addition *)
-  | Addition of 'a expr * 'a expr * 'a
+  | Addition of expr * expr
   (* e - e -- Subtraction *)
-  | Subtraction of 'a expr * 'a expr * 'a
+  | Subtraction of expr * expr
   (* e * e -- Multiplication *)
-  | Multiplication of 'a expr * 'a expr * 'a
+  | Multiplication of expr * expr
   (* e / e -- Division *)
-  | Division of 'a expr * 'a expr * 'a
+  | Division of expr * expr
   (* null -- Null *)
-  | Null of 'a
+  | Null
   (* e.e -- Field Selection *)
-  | Field_selection of 'a expr * 'a expr * 'a
+  | Field_selection of expr * expr
   (* proc y:C -- Procedure *)
-  | Procedure of variable * 'a tree * 'a
+  | Procedure of variable * command
 (* Boolean Expressions b ::= *)
-and 'a bexpr = 
+and bexpr = 
   (* true -- True*)
-  | True of 'a
+  | True
   (* false -- False*)
-  | False of 'a
+  | False
   (* e == e -- Equal To *)
-  | Equal_to of 'a expr * 'a expr * 'a
+  | Equal_to of expr * expr
   (* e < e -- Less Than *)
-  | Less_than of 'a expr * 'a expr * 'a
+  | Less_than of expr * expr
 (* Commands C ::= *)
-and 'a tree = 
+and command = 
   (* var x;C -- Variable Delcaration *)
-  | Var_declaration of variable * 'a tree * 'a
+  | Var_declaration of variable * command
   (* e(e) -- Procedure Call *)
-  | Proc_call of 'a expr * 'a expr * 'a
+  | Proc_call of expr * expr
   (* malloc(x) -- Allocation *)
-  | Allocation of variable  * 'a
+  | Allocation of variable 
   (* x = e -- Varaible Assignment *)
-  | Var_assignment of variable * 'a expr * 'a
+  | Var_assignment of variable * expr
   (* e.e = e -- Field Assignment *)
-  | Field_assignment of 'a expr * 'a expr * 'a expr * 'a
+  | Field_assignment of expr * expr * expr
   (* skip -- Skip *)
-  | Skip of 'a
+  | Skip
   (* {C:C} -- Sequential Control *)
-  | Seq of 'a tree * 'a tree * 'a
+  | Seq of command * command
   (* while b C -- While Loop *)
-  | While of 'a bexpr * 'a tree * 'a
+  | While of bexpr * command
   (* if b C else C -- If Statement *)
-  | If_else of 'a bexpr * 'a tree * 'a tree * 'a
+  | If_else of bexpr * command * command
   (* {C|||C} -- Parallelism *)
-  | Parallel of 'a tree * 'a tree * 'a
+  | Parallel of command * command
   (* atom(C) -- Atomicity *)
-  | Atom of 'a tree * 'a
+  | Atom of command
 ;;
