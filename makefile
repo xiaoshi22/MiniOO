@@ -44,8 +44,16 @@ test2:
 	@echo "var X; if 1 + 1 == 2 X = 1 else X = 2" | ./miniool
 	@echo "var X; while false X = 1"
 	@echo "var X; while false X = 1" | ./miniool
+	@echo "var X; {X=1; var P; {P = proc X: X=2; P(0)}}"
+	@echo "var X; {X=1; var P; {P = proc X: X=2; P(0)}}" | ./miniool
 
 test3:
+	@echo "var X; {{X = 0; {X = X+1; X = X+1}} ||| X = 0}"
+	@echo "var X; {{X = 0; {X = X+1; X = X+1}} ||| X = 0}" | ./miniool
+	@echo "var X; {{X = 0; atom({X = X+1; X = X+1})} ||| X = 0}"
+	@echo "var X; {{X = 0; atom({X = X+1; X = X+1})} ||| X = 0}" | ./miniool
+
+test4:
 	# @echo "{{{var x; x = null}; x=z.y};proc y:C}" 
 	# @echo "{{{var x; x = null}; x=z.y};proc y:C}" | ./miniool
 	# @echo "{x(x); malloc(x)}" 
