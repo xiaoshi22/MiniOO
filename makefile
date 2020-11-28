@@ -20,6 +20,11 @@ all: delete
 					bin/semanticDomain.cmo bin/printSemantics.cmo bin/operationalSemantics.cmo\
 			    	bin/parser.cmo bin/lexer.cmo bin/miniool.cmo
 
+
+delete:
+	/bin/rm -f makefile~
+	/bin/rm -f bin/*.cmi bin/*.cmo bin/lexer.ml bin/parser.ml bin/parser.mli
+
 test:
 	@echo "---------------------------------------------------"
 	@echo "# using the miniool:"
@@ -59,10 +64,6 @@ test3:
 	@echo "var X; {malloc(X);{X.f=2;while X.f<30 X.f=X.f+X.f}}" | ./miniool
 	# @echo "var X; {malloc(X); {X.f=1; X.t = 2}}"| ./miniool
 
-
-delete:
-	/bin/rm -f makefile~
-	/bin/rm -f bin/*.cmi bin/*.cmo bin/lexer.ml bin/parser.ml bin/parser.mli
 
 example1:
 	# Field and loop
