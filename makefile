@@ -1,24 +1,24 @@
 BDIR = build
 
 all: delete
-	ocamlc -c abstractSyntax.ml
-	ocamlc -c staticScoping.ml
-	ocamlc -c printAST.ml
-	ocamlc -c semanticDomain.ml
-	ocamlc -c printSemantics.ml
-	ocamlc -c operationalSemantics.ml
+	ocamlc -I bin -o bin/abstractSyntax.cmo -c src/abstractSyntax.ml
+	ocamlc -I bin -o bin/staticScoping.cmo -c src/staticScoping.ml
+	ocamlc -I bin -o bin/printAST.cmo -c src/printAST.ml
+	ocamlc -I bin -o bin/semanticDomain.cmo -c src/semanticDomain.ml
+	ocamlc -I bin -o bin/printSemantics.cmo -c src/printSemantics.ml
+	ocamlc -I bin -o bin/operationalSemantics.cmo -c src/operationalSemantics.ml
 
-	ocamlyacc parser.mly
-	ocamlc -c parser.mli
-	ocamlc -c parser.ml
+	ocamlyacc -bbin/parser src/parser.mly
+	ocamlc -I bin -o bin/parser.cmi -c bin/parser.mli
+	ocamlc -I bin -o bin/parser.cmo -c bin/parser.ml
 
-	ocamllex lexer.mll
-	ocamlc -c lexer.ml
+	ocamllex  -o bin/lexer.ml src/lexer.mll
+	ocamlc -I bin -o bin/lexer.cmo -c bin/lexer.ml
 
-	ocamlc -c miniool.ml
-	ocamlc -o miniool abstractSyntax.cmo staticScoping.cmo printAST.cmo \
-					semanticDomain.cmo printSemantics.cmo operationalSemantics.cmo\
-			    	parser.cmo lexer.cmo miniool.cmo
+	ocamlc -I bin -o bin/miniool.cmo -c src/miniool.ml
+	ocamlc -I bin -o miniool bin/abstractSyntax.cmo bin/staticScoping.cmo bin/printAST.cmo \
+					bin/semanticDomain.cmo bin/printSemantics.cmo bin/operationalSemantics.cmo\
+			    	bin/parser.cmo bin/lexer.cmo bin/miniool.cmo
 
 test:
 	@echo "---------------------------------------------------"
@@ -61,7 +61,8 @@ test3:
 
 
 delete:
-	/bin/rm -f miniool *.cmi *.cmo lexer.ml parser.ml parser.mli makefile~
+	/bin/rm -f makefile~
+	/bin/rm -f bin/*.cmi bin/*.cmo bin/lexer.ml bin/parser.ml bin/parser.mli
 
 example1:
 	# Field and loop
