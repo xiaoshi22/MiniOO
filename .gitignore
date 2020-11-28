@@ -7,9 +7,9 @@
 *.cmx
 *.cmxs
 *.cmxa
-minioolLEX.ml
-minioolYACC.ml
-minioolYACC.mli
+lexer.ml
+parser.ml
+parser.mli
 
 # ocamlbuild working directory
 _build/

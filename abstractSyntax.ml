@@ -46,7 +46,7 @@ and command =
   | Field_assignment of expr * expr * expr
   (* skip -- Skip *)
   | Skip
-  (* {C:C} -- Sequential Control *)
+  (* {C;C} -- Sequential Control *)
   | Seq of command * command
   (* while b C -- While Loop *)
   | While of bexpr * command

@@ -1,11 +1,13 @@
-(* File minioolLEX.mll *)
+(* File LEX.mll *)
 {
-open MinioolYACC;; (* Type token defined in miniYACC.mli *)
+open Parser;; (* Type token defined in miniYACC.mli *)
 exception Error;;
+exception Eof;;
 }
 
 rule token = parse
-    [' ' '\t' '\n'] { token lexbuf } (* skip blanks, tabs and newlines *)
+    [' ' '\t'] { token lexbuf } (* skip blanks and tabs*)
+  | ['\n' ]         { EOL }
   | "var"           { VAR }
   | "true"          { TRUE }
   | "false"         { FALSE }  
@@ -38,6 +40,6 @@ rule token = parse
   | '<'             { LESSTHAN }
   | '.'             { DOT }
   | "|||"           { PARALLEL }
-  | eof             { END }
+  | eof             { raise Eof }
   |_                { raise Error }
   
